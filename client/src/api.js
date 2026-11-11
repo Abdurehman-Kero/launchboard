@@ -4,7 +4,7 @@
  * Automatically switches between Remote REST API and In-Memory Demo Mode.
  */
 
-const BASE = import.meta.env.VITE_API_URL || '';
+const BASE = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
 export const DEMO_MODE = !BASE;
 
 export class ApiError extends Error {
