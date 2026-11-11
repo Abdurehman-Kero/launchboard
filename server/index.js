@@ -36,11 +36,22 @@ const ALLOWED_STATUSES = ['idea', 'building', 'live'];
 const GITHUB_REPO_PATTERN = /^https:\/\/github\.com\/[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+(?:\/)?$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const allowedOrigin = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.trim().replace(/\/+$/, '')
-  : undefined;
+const allowedOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((origin) => origin.trim().replace(/^['"]|['"]$/g, '').replace(/\/+$/, ''))
+  .filter(Boolean);
 
-app.use(cors({ origin: allowedOrigin }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
+      const normalized = origin.replace(/\/+$/, '');
+      return callback(null, allowedOrigins.includes(normalized));
+    },
+  })
+);
 app.use(express.json({ limit: '10kb' }));
 
 /**

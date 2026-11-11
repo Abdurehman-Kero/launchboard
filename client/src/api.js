@@ -4,7 +4,20 @@
  * Automatically switches between Remote REST API and In-Memory Demo Mode.
  */
 
-const BASE = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+function normalizeApiBase(rawUrl) {
+  let url = (rawUrl || '')
+    .trim()
+    .replace(/^['"]|['"]$/g, '')
+    .trim()
+    .replace(/\/+$/, '');
+  if (!url) return '';
+  if (!/^https?:\/\//i.test(url) && !url.startsWith('/')) {
+    url = `https://${url}`;
+  }
+  return url;
+}
+
+const BASE = normalizeApiBase(import.meta.env.VITE_API_URL);
 export const DEMO_MODE = !BASE;
 
 export class ApiError extends Error {
