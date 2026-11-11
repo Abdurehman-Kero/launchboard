@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Ensure window.fetch has both getter and setter so inspector/extension tools can safely monkey-patch it
+      (function() {
+        try {
+          var originalFetch = window.fetch;
+          if (typeof originalFetch === 'function') {
+            var _fetch = originalFetch;
+            var descriptor = {
+              get: function() { return _fetch; },
+              set: function(fn) { _fetch = fn; },
+              configurable: true,
+              enumerable: true
+            };
+            try {
+              Object.defineProperty(window, 'fetch', descriptor);
+            } catch (_) {
+              try {
+                Object.defineProperty(Object.getPrototypeOf(window), 'fetch', descriptor);
+              } catch (_) {}
+            }
+          }
+        } catch (_) {}
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LaunchBoard — Where bootcamp projects go live</title>
+    <meta name="description" content="Where bootcamp projects go live. A public showcase for bootcamp graduates to launch, discover, and support student-built products." />
+    <meta property="og:title" content="LaunchBoard — Where bootcamp projects go live" />
+    <meta property="og:description" content="Where bootcamp projects go live. A public showcase for bootcamp graduates to launch, discover, and support student-built products." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
